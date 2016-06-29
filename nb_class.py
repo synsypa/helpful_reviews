@@ -59,6 +59,7 @@ mnb_mod = Pipeline([
 
 # Accuracy Score
 acc = cross_val_score(mnb_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
+roc_auc = cross_val_score(mnb_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
 
 # Fit Model
 mnb_mod.fit(X_df, y_df)

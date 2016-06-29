@@ -64,11 +64,14 @@ rlr_mod = Pipeline([
 
 # Accuracy Score
 acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
+roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
+
+
+# Fit Model
+rlr_mod.fit(X_df, y_df)
+dill.dump(rlr_mod, open('logit_class', 'w'), recurse=True)
 
 # Coefficient Weights 
 weights = dict(zip(features, rlr_mod.named_steps['rlr'].scores_))
 #dill.dump(weights, open('logit_coef', 'w'), recurse=True)
 
-# Fit Model
-rlr_mod.fit(X_df, y_df)
-dill.dump(rlr_mod, open('logit_class', 'w'), recurse=True)
