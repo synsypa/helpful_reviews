@@ -18,7 +18,7 @@ query = """
                score, summary, text
         FROM reviews 
         WHERE num_help >= 5
-        LIMIT 100000
+        LIMIT 80000
         """
 df = pd.read_sql_query(query, con)
 
@@ -54,6 +54,7 @@ w_not = df['not_help'] + pr_not
 df['help_rate'] = w_help/(w_help + w_not)
 df['help_bin'] = pd.qcut(df['help_rate'], 10, range(1,11))
 df['help_log'] = np.log(df['help_rate'] + 1) 
+df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
 
 ### Generate score average and deviation features
 df['prod_score'] = df['score'].groupby(df['pid']).transform('mean')
