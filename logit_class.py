@@ -23,10 +23,10 @@ df = pd.read_pickle('parsed_df.pkl')
 #df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
 
 good_df = df[df['help_class'] == 1]
-good_df = good_df.sample(n=12500, random_state=123456)
+good_df = good_df.sample(n=20000, random_state=123456)
 
 bad_df = df[df['help_class'] == 0]
-bad_df = bad_df.sample(n=12500, random_state=123456)
+bad_df = bad_df.sample(n=20000, random_state=123456)
 
 cut_df = good_df.append(bad_df)
 
