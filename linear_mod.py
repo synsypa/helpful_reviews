@@ -59,18 +59,24 @@ class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 #        print
 
 # Pipeline for cross-validated linear regression
-lin_mod = Pipeline([
-    ('select', ColumnTransformer([u'length', u'ent_pct', u'quant_pct', u'score_diff'])),
-    ('linreg', LinearRegression(normalize=True))
-    ])
+features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct', 
+            'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant']
+
+basic_mod = Pipeline([
+                    ('select', ColumnTransformer(features)),
+                    ('f_test', SelectKBest(score_func=f_regression)),
+                    ('linreg', LinearRegression(normalize=True))
+                    ])
+
+lin_mod = GridSearchCV(basic_mod, {'f_test__k':[1,2,3,4,5,6,7,8,9,10]}, scoring='mean_squared_error')
 
 # Fit model
 lin_mod.fit(X_df, y_df)
 
 # Store Scores
-scores = cross_val_score(lin_mod, X_df, y_df, cv=5, scoring='mean_squared_error')
-rmse = (-1.*scores.mean()) ** (.5)
-
-f_weights = cvd_mod.named_steps['linreg'].coef_
+mse = cross_val_score(lin_mod, X_df, y_df, cv=5, scoring='mean_squared_error')
+r2 = cross_val_score(lin_mod, X_df, y_df, cv=5, scoring='r2').mean()
+rmse = (-1.*mse.mean()) ** (.5)
+k_best = lin_mod.best_params_
 
 dill.dump(lin_mod, open('basic_linreg', 'w'), recurse=True)

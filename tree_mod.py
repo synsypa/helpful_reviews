@@ -44,7 +44,8 @@ search = {"min_samples_split": [2, 10, 20],
           "max_depth": [None, 2, 5, 10],
           "min_samples_leaf": [1, 5, 10],
           "max_leaf_nodes": [None, 5, 10, 20]}
-features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct']
+features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct', 
+            'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant']
 tree_mod = Pipeline([
                     ('select', ColumnTransformer(features)),
                     ('rtree', GridSearchCV(DecisionTreeRegressor(), scoring='mean_squared_error', param_grid=search))
@@ -57,7 +58,7 @@ tree_mod.fit(X_df, y_df)
 score = tree_mod.named_steps['rtree'].best_score_
 rmse = (-1. * score)** .5
 
-f_weight = tree_mod.named_steps['rtree'].best_estimator_.feature_importances_
+f_weights = tree_mod.named_steps['rtree'].best_estimator_.feature_importances_
 
 # Save Model
 dill.dump(tree_mod, open('basic_dtree', 'w'), recurse=True)
