@@ -18,7 +18,7 @@ query = """
                score, summary, text
         FROM reviews 
         WHERE num_help >= 5
-        LIMIT 80000
+        LIMIT 100000
         """
 df = pd.read_sql_query(query, con)
 

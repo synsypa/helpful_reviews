@@ -4,19 +4,15 @@ import dill
 import pandas as pd
 import numpy as np
 import sklearn as sk
+import matplotlib
 
 import sklearn.metrics
 from sklearn.pipeline import Pipeline
-from sklearn.linear_model import RandomizedLogisticRegression, LogisticRegression
+from sklearn.naive_bayes import GaussianNB, MultinomialNB
 
 from sklearn.cross_validation import cross_val_score
 
-# sklearn.linear_model.RandomizedLogisticRegression uses a depreciated function
-# ignore the depreciation error
-import warnings
-warnings.filterwarnings('ignore')
-
-# Load Data
+# Read Data
 df = pd.read_pickle('parsed_df.pkl')
 
 # Construct Balanced Subset
@@ -52,23 +48,18 @@ class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
         except (TypeError, KeyError):
             raise TypeError('Column selection must be list of strings')
 
-# Pipeline for Randomized Logit Regression selected Logit
+# Multinomial Naive Bayes Pipeline
 features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct', 
             'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant']
 
-rlr_mod = Pipeline([
+mnb_mod = Pipeline([
                     ('select', ColumnTransformer(features)),
-                    ('rlr', RandomizedLogisticRegression(random_state=123456)),
-                    ('logit', LogisticRegression())
+                    ('mnb', MultinomialNB())
                     ])
 
 # Accuracy Score
-acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
-
-# Coefficient Weights 
-weights = dict(zip(features, rlr_mod.named_steps['rlr'].scores_))
-#dill.dump(weights, open('logit_coef', 'w'), recurse=True)
+acc = cross_val_score(mnb_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
 
 # Fit Model
-rlr_mod.fit(X_df, y_df)
-dill.dump(rlr_mod, open('logit_class', 'w'), recurse=True)
+mnb_mod.fit(X_df, y_df)
+dill.dump(mnb_mod, open('mnb_class', 'w'), recurse=True)
