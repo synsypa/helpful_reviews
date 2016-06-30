@@ -50,7 +50,9 @@ class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 
 # Multinomial Naive Bayes Pipeline
 features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct', 
-            'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant']
+            'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant',
+            #'score_pos', 'score_neg',
+            'score_low', 'score_high']
 
 mnb_mod = Pipeline([
                     ('select', ColumnTransformer(features)),
