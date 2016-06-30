@@ -4,19 +4,17 @@ import dill
 import pandas as pd
 import numpy as np
 import sklearn as sk
+import matplotlib
 
 import sklearn.metrics
 from sklearn.pipeline import Pipeline
-from sklearn.linear_model import RandomizedLogisticRegression, LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
 
+from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import cross_val_score
 
-# sklearn.linear_model.RandomizedLogisticRegression uses a depreciated function
-# ignore the depreciation error
-import warnings
-warnings.filterwarnings('ignore')
-
-# Load Data
+# Load Parsed Data
 df = pd.read_pickle('parsed_df.pkl')
 
 # Construct Balanced Subset
@@ -43,7 +41,7 @@ class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
         pass
 
     def fit(self, X, y):
-        return self	
+        return self
 
     def transform(self, X):
         assert(type(X) == pd.core.frame.DataFrame), 'Features must be a DataFrame'
@@ -52,28 +50,25 @@ class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
         except (TypeError, KeyError):
             raise TypeError('Column selection must be list of strings')
 
-# Pipeline for Randomized Logit Regression selected Logit
+# GridSearchCV Pipeline for Regression Tree
 features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct', 
             'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant',
             #'score_pos', 'score_neg',
             'score_low', 'score_high']
+search = {"min_samples_split": [2, 10, 20],
+          "max_depth": [None, 2, 5, 10],
+          "min_samples_leaf": [1, 5, 10],
+          "max_leaf_nodes": [None, 5, 10, 20]}
 
-rlr_mod = Pipeline([
+rf_mod = Pipeline([
                     ('select', ColumnTransformer(features)),
-                    ('rlr', RandomizedLogisticRegression(random_state=123456)),
-                    ('logit', LogisticRegression())
+                    ('forest', GridSearchCV(RandomForestClassifier(), param_grid=search, cv=5, scoring='accuracy'))
                     ])
 
-# Accuracy Score
-acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
-roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
-
-
 # Fit Model
-rlr_mod.fit(X_df, y_df)
-dill.dump(rlr_mod, open('logit_class', 'w'), recurse=True)
+rf_mod.fit(X_df, y_df)
+dill.dump(rf_mod, open('forest_class', 'w'), recurse=True)
 
-# Coefficient Weights 
-weights = dict(zip(features, rlr_mod.named_steps['rlr'].scores_))
-#dill.dump(weights, open('logit_coef', 'w'), recurse=True)
-
+# Store Score
+acc = rf_mod.named_steps['forest'].best_score_
+f_weights = rf_mod.named_steps['forest'].best_estimator_.feature_importances_
