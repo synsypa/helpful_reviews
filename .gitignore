@@ -1,0 +1,20 @@
+# ipython notebooks #
+#####################
+*.ipynb
+
+# pickles #
+###########
+*.pkl
+mnb_class
+nb_class
+forest_class
+
+# data #
+########
+*.sqlite
+*.csv
+
+# directories #
+###############
+food_files/*
+old/*
