@@ -7,7 +7,10 @@
 *.pkl
 mnb_class
 nb_class
+logit_class
 forest_class
+logit_tfidf
+forest_tfidf
 
 # data #
 ########

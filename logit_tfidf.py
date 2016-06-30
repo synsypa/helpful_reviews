@@ -109,7 +109,7 @@ search = {"min_samples_split": [2, 10, 20],
 rlr_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
-    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1))),
+    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1), max_df=.1, min_df=.95)),
     ('rlr', RandomizedLogisticRegression(random_state=123456)),
     ('logit', LogisticRegression())
     ])
