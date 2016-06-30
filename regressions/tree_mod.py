@@ -10,6 +10,7 @@ import matplotlib
 import sklearn.metrics
 from sklearn.pipeline import Pipeline
 from sklearn.tree import DecisionTreeRegressor
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.cross_validation import cross_val_score
 from sklearn.grid_search import GridSearchCV
 from itertools import combinations
@@ -48,7 +49,7 @@ features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct',
             'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant']
 tree_mod = Pipeline([
                     ('select', ColumnTransformer(features)),
-                    ('rtree', GridSearchCV(DecisionTreeRegressor(), scoring='mean_squared_error', param_grid=search))
+                    ('rtree', GridSearchCV(RandomForestRegressor(), scoring='mean_squared_error', param_grid=search))
                     ])
 
 # Fit Model

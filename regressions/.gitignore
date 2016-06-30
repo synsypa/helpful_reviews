@@ -1,3 +1,7 @@
+# Notebooks #
+#############
+*.ipynb
+
 # Pickles #
 ###########
 basic_linreg

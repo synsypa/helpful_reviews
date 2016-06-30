@@ -19,6 +19,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import cross_val_score
 
+# Load data
+df = pd.read_pickle('parsed_df.pkl')
+
 # Construct Balanced Subset
 #df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
 
