@@ -71,4 +71,4 @@ dill.dump(rf_mod, open('forest_class', 'w'), recurse=True)
 
 # Store Score
 acc = rf_mod.named_steps['forest'].best_score_
-f_weights = rf_mod.named_steps['forest'].best_estimator_.feature_importances_
+weights = dict(zip(features, rf_mod.named_steps['forest'].best_estimator_.feature_importances_))
