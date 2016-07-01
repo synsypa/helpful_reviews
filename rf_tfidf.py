@@ -9,6 +9,7 @@ import matplotlib
 import re
 from bs4 import BeautifulSoup
 from spacy.en import English
+from nltk.corpus import stopwords
 
 import sklearn.metrics
 from sklearn.pipeline import Pipeline
@@ -83,12 +84,15 @@ def spacy_tokenize(text):
     # Tokenize with spaCy
     parser = English(tagger=False, entity=False, parser=False, matcher=False)
     tokens = parser(text)
-    
+
     #lemmatize
     lemmas = []
     for t in tokens:
         lemmas.append(t.lemma_.lower().strip() if t.lemma_ != '-PRON-' else t.lower_)
     tokens = lemmas
+
+    # remove stopwords
+    tokens = [tok for tok in tokens if tok not in stopwords.words('english')]
     
     # remove whitespace
     while "" in tokens:
@@ -110,14 +114,16 @@ search = {"min_samples_split": [2, 10, 20],
 rf_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
-    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1), max_df=.1, min_df=.95)),
+    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1), min_df=5, max_df=.90)),
     ('forest', GridSearchCV(RandomForestClassifier(), param_grid=search, cv=5, scoring='accuracy'))
     ])
 
 # Fit Model
 rf_tfidf.fit(X_df, y_df)
+print rf_tfidf.named_steps['forest'].best_params_
+
 dill.dump(rf_tfidf, open('forest_tfidf', 'w'), recurse=True)
 
 # Accuracy
-acc = rf_tfidf.named_steps['forest'].best_score_
-print acc
+#acc = rf_tfidf.named_steps['forest'].best_score_
+#print acc
