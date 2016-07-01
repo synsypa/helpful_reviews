@@ -102,10 +102,6 @@ def spacy_tokenize(text):
     return tokens
 
 # Randomized Logit Pipeline
-search = {"min_samples_split": [2, 10, 20],
-          "max_depth": [None, 2, 5, 10],
-          "min_samples_leaf": [1, 5, 10],
-          "max_leaf_nodes": [None, 5, 10, 20]}
 rlr_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
@@ -116,8 +112,10 @@ rlr_tfidf = Pipeline([
 
 # Fit Model
 rlr_tfidf.fit(X_df, y_df)
-#dill.dump(rlr_tfidf, open('logit_tfidf', 'w'), recurse=True)
+dill.dump(rlr_tfidf, open('logit_tfidf', 'w'), recurse=True)
 
 # Accuracy
-acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
-roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
+#acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
+#print acc
+#roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
+#print roc_auc

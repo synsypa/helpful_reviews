@@ -120,3 +120,4 @@ dill.dump(rf_tfidf, open('forest_tfidf', 'w'), recurse=True)
 
 # Accuracy
 acc = rf_tfidf.named_steps['forest'].best_score_
+print acc
