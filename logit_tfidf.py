@@ -14,7 +14,7 @@ from nltk.corpus import stopwords
 import sklearn.metrics
 from sklearn.pipeline import Pipeline
 from sklearn.linear_model import RandomizedLogisticRegression, LogisticRegression
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, HashingVectorizer, TfidfTransformer
 
 from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import cross_val_score
@@ -109,7 +109,9 @@ def spacy_tokenize(text):
 rlr_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
-    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1), min_df=.10, max_df=.90)),
+    ('hash', HashingVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1))),
+    #('tfidf', TfidfVectorizer(tokenizer=spacy_tokenize,, min_df=.10, max_df=.90)),
+    ('tfidf', TfidfTransformer()),
     ('rlr', RandomizedLogisticRegression(random_state=123456)),
     ('logit', LogisticRegression())
     ])
