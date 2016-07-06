@@ -19,6 +19,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer, HashingVectorizer, 
 from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import cross_val_score
 
+# Ignore randomization warning
+import warnings
+warnings.filterwarnings('ignore')
+
 # Load data
 df = pd.read_pickle('parsed_df.pkl')
 
@@ -109,7 +113,8 @@ def spacy_tokenize(text):
 rlr_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
-    ('hash', HashingVectorizer(tokenizer=spacy_tokenize, stop_words='english', ngram_range=(1,1))),
+    #('hash', HashingVectorizer(tokenizer=spacy_tokenize, stop_words='english', ngram_range=(1,1))),
+    ('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
     ('tfidf', TfidfTransformer()),
     #('tfidf', TfidfVectorizer(tokenizer=spacy_tokenize,, min_df=100, max_df=.90)),
     ('rlr', RandomizedLogisticRegression(random_state=123456)),
@@ -121,7 +126,7 @@ rlr_tfidf.fit(X_df, y_df)
 dill.dump(rlr_tfidf, open('logit_tfidf', 'w'), recurse=True)
 
 # Accuracy
-#acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
-#print acc
-#roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
-#print roc_auc
+acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
+print acc
+roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
+print roc_auc
