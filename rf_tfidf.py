@@ -114,7 +114,7 @@ search = {"min_samples_split": [2, 10, 20],
 rf_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
-    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1), min_df=10, max_df=.90)),
+    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1), min_df=100, max_df=.90)),
     ('forest', GridSearchCV(RandomForestClassifier(), param_grid=search, cv=5, scoring='accuracy'))
     ])
 

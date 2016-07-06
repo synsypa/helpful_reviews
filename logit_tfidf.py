@@ -109,9 +109,9 @@ def spacy_tokenize(text):
 rlr_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
-    ('hash', HashingVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1))),
-    #('tfidf', TfidfVectorizer(tokenizer=spacy_tokenize,, min_df=.10, max_df=.90)),
+    ('hash', HashingVectorizer(tokenizer=spacy_tokenize, stop_words='english', ngram_range=(1,1))),
     ('tfidf', TfidfTransformer()),
+    #('tfidf', TfidfVectorizer(tokenizer=spacy_tokenize,, min_df=100, max_df=.90)),
     ('rlr', RandomizedLogisticRegression(random_state=123456)),
     ('logit', LogisticRegression())
     ])
