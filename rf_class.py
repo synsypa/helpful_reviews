@@ -55,14 +55,12 @@ features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct',
             'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant',
             #'score_pos', 'score_neg',
             'score_low', 'score_high']
-search = {"min_samples_split": [25, 50, 75],
-          "max_depth": [10, 25, 50],
-          "min_samples_leaf": [10, 25, 50], 
-          "max_leaf_nodes": [None, 5, 10, 20]}
+#search = {"min_samples_split": range(75,81)}
 
 rf_mod = Pipeline([
                     ('select', ColumnTransformer(features)),
-                    ('forest', GridSearchCV(RandomForestClassifier(), param_grid=search, cv=5, scoring='accuracy'))
+                    #('forest', GridSearchCV(RandomForestClassifier(max_depth=10, max_leaf_nodes=None, min_samples_leaf=10), param_grid=search, cv=5, scoring='accuracy'))
+                    ('forest', RandomForestClassifier(max_depth=10, max_leaf_nodes=None, min_samples_leaf=10, min_samples_split=79))
                     ])
 
 # Fit Model
@@ -70,6 +68,7 @@ rf_mod.fit(X_df, y_df)
 dill.dump(rf_mod, open('forest_class', 'w'), recurse=True)
 
 # Store Score
-acc = rf_mod.named_steps['forest'].best_score_
-params = rf_mod.named_steps['forest'].best_params_
-weights = dict(zip(features, rf_mod.named_steps['forest'].best_estimator_.feature_importances_))
+acc = cross_val_score(rf_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
+print acc
+weights = dict(zip(features, rf_mod.named_steps['forest'].feature_importances_))
+print weights

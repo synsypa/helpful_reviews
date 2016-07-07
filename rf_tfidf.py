@@ -27,10 +27,10 @@ df = pd.read_pickle('parsed_df.pkl')
 #df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
 
 good_df = df[df['help_class'] == 1]
-good_df = good_df.sample(n=2500, random_state=123456)
+good_df = good_df.sample(n=20000, random_state=123456)
 
 bad_df = df[df['help_class'] == 0]
-bad_df = bad_df.sample(n=2500, random_state=123456)
+bad_df = bad_df.sample(n=20000, random_state=123456)
 
 cut_df = good_df.append(bad_df)
 
@@ -107,10 +107,10 @@ def spacy_tokenize(text):
     return tokens
 
 # Random Forest Pipeline
-search = {"min_samples_split": [2, 10, 20],
-          "max_depth": [None, 2, 5, 10],
-          "min_samples_leaf": [1, 5, 10],
-          "max_leaf_nodes": [None, 5, 10, 20]}
+search = {"min_samples_split": [50, 100, 150],
+          "max_depth": [None, 5, 10, 20],
+          "min_samples_leaf": [1, 10, 20],
+          "max_leaf_nodes": [None, 10, 20, 50]}
 rf_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
