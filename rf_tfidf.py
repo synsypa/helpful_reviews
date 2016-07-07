@@ -82,7 +82,7 @@ class TextCleanTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 # SpaCy Tokenizer
 def spacy_tokenize(text):
     # Tokenize with spaCy
-    parser = English(tagger=False, entity=False, parser=False, matcher=False)
+    parser = English(entity=False, parser=False, matcher=False)
     tokens = parser(text)
 
     #lemmatize
@@ -107,24 +107,25 @@ def spacy_tokenize(text):
     return tokens
 
 # Random Forest Pipeline
-search = {"min_samples_split": [50, 100, 150],
-          "max_depth": [None, 5, 10, 20],
-          "min_samples_leaf": [1, 10, 20],
-          "max_leaf_nodes": [None, 10, 20, 50]}
+search = {'vectorize__min_df':[100, 200, 300],
+            'vectorize__max_df':[.8, .9, .95]}
 rf_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
-    #('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1), min_df=100, max_df=.90)),
-    ('vectorize', TfidfVectorizer(ngram_range=(1,1), min_df=100, max_df=.90)),
-    ('forest', GridSearchCV(RandomForestClassifier(), param_grid=search, cv=5, scoring='accuracy'))
+    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1))),
+    #('vectorize', TfidfVectorizer(ngram_range=(1,1), min_df=200, max_df=.95)),
+    ('forest', RandomForestClassifier(max_leaf_nodes=None, max_depth=None, min_samples_leaf=10, min_samples_split=200))
     ])
 
 # Fit Model
-rf_tfidf.fit(X_df, y_df)
-print rf_tfidf.named_steps['forest'].best_params_
+grid = GridSearchCV(rf_tfidf, param_grid=search, cv=5, scoring='accuracy')
+grid.fit(X_df, y_df)
+#rf_tfidf.fit(X_df, y_df)
+print grid.best_params_
 
-dill.dump(rf_tfidf, open('forest_tfidf', 'w'), recurse=True)
+#dill.dump(rf_tfidf, open('forest_tfidf', 'w'), recurse=True)
+dill.dump(grid, open('forest_tfidf', 'w'), recurse=True)
 
 # Accuracy
-acc = rf_tfidf.named_steps['forest'].best_score_
+acc = grid.best_score_
 print acc

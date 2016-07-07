@@ -85,7 +85,7 @@ class TextCleanTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 # SpaCy Tokenizer
 def spacy_tokenize(text):
     # Tokenize with spaCy
-    parser = English(tagger=False, entity=False, parser=False, matcher=False)
+    parser = English(entity=False, parser=False, matcher=False)
     tokens = parser(text)
 
     #lemmatize
@@ -113,8 +113,8 @@ def spacy_tokenize(text):
 rlr_tfidf = Pipeline([
     ('select', ColumnTransformer(['text'])),
     ('clean', TextCleanTransformer(['text'])),
-    #('hash', HashingVectorizer(tokenizer=spacy_tokenize, stop_words='english', ngram_range=(1,1))),
-    ('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
+    ('hash', HashingVectorizer(tokenizer=spacy_tokenize, stop_words='english', ngram_range=(1,1))),
+    #('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
     ('tfidf', TfidfTransformer()),
     #('tfidf', TfidfVectorizer(tokenizer=spacy_tokenize,, min_df=100, max_df=.90)),
     #('rlr', RandomizedLogisticRegression(random_state=123456)),
