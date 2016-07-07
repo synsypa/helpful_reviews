@@ -72,6 +72,10 @@ df['score_high'] = np.where(df['score_chg'] > 0, 1, 0)
 parser = English()#parser=False)#, entity=False, matcher=False)
 df['parsed'] = df['text'].apply(parser)
 
+# Function to lemmatize words in review
+def lemma_text(spacy):
+    return ' '.join(token.lemma_.lower().strip() if token.lemma_ != "-PRON-" else token.lower_ for token in spacy)
+
 # Function to count words in review
 def count_wrd(spacy):
     words = 0
@@ -147,7 +151,8 @@ def quant_sent(spacy):
         nsent.append(quant(sent))
     return 1. * sum(nsent)/len(nsent)
 
-
+# Apply functions
+cdf['lemma'] = df['parsed'].apply(lemma_text)
 df['length'] = df['parsed'].apply(count_wrd)
 
 df['desc_coarse'] = df['parsed'].apply(coarse_desc)
@@ -175,4 +180,4 @@ df['sent_quant'] = df['parsed'].apply(quant_sent)
 df = df.drop('parsed', axis=1)
 
 ### Save to Pickle
-df.to_pickle('parsed_df.pkl')
+df.to_pickle('parsed_df_wlem.pkl')
