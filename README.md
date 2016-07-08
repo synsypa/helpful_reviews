@@ -27,6 +27,7 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 * `logit_tfidf.py` trains a Logistic Regression classification using lemmatized TFIDF features. Model saved to `logit_tfidf` dill
 * `rf_tfidf.py` trains a Random Forest classification using lemmatized TFIDF features. Model saved to `forest_tfidf` dill
 * `full_model.py` aggregates models using bagging with random forest.
+* `svm_tfidf.py` is unused. 
 
 ## Data
 Amazon Electronics Review Dataset from http://jmcauley.ucsd.edu/data/amazon/
