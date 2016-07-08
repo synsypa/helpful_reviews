@@ -24,7 +24,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Load data
-df = pd.read_pickle('parsed_df.pkl')
+df = pd.read_pickle('parsed_df_wlem.pkl')
 
 # Construct Balanced Subset
 #df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
@@ -37,7 +37,8 @@ df = pd.read_pickle('parsed_df.pkl')
 
 #cut_df = good_df.append(bad_df)
 
-X_df = df.drop('help_class', axis = 1)
+#X_df = df.drop('help_class', axis = 1)
+X_df = df['lemma']
 y_df = df['help_class']
 
 # Column Selection Transformer
@@ -111,8 +112,6 @@ def spacy_tokenize(text):
 
 # Randomized Logit Pipeline
 rlr_tfidf = Pipeline([
-    ('select', ColumnTransformer(['lemma'])),
-    ('clean', TextCleanTransformer(['lemma'])),
     ('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
     #('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
     ('tfidf', TfidfTransformer()),

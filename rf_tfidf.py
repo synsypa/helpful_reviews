@@ -24,7 +24,8 @@ from sklearn.cross_validation import cross_val_score
 #df = pd.read_pickle('parsed_df.pkl')
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-X_df = df.drop('help_class', axis = 1)
+#X_df = df.drop('help_class', axis = 1)
+X_df = df['lemma']
 y_df = df['help_class']
 
 # Column Selection Transformer
@@ -77,8 +78,6 @@ search = {'vectorize__min_df':[100, 200, 300],
         'forest__min_samples_leaf':[5, 10, 15, 20],
         'forest__min_samples_split':[100, 150, 200, 250]}
 rf_tfidf = Pipeline([
-    ('select', ColumnTransformer(['lemma'])),
-    ('clean', TextCleanTransformer(['lemma'])),
     ('vectorize', TfidfVectorizer(ngram_range=(1,1))),#, min_df=200, max_df=.95)),
     ('forest', RandomForestClassifier()),#max_leaf_nodes=None, max_depth=None, min_samples_leaf=10, min_samples_split=200))
     ])
