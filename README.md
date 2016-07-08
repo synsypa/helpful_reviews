@@ -20,13 +20,13 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 *Text features processed with spaCy*
 
 ## Files
-*. `parse_raw.py` pulls reviews, processes text, and generates features and lemmatized text
-*. `nb_class.py` trains a Multinomial Naive Bayes classification using constructed features. Model saved to `mnb_class` dill
-*. `logit_class.py` trains a Randomized Logistic Regression classification using constructed features. Model saved to `logit_class` dill
-*. `rf_class.py` trains a Random Forest classification using constructed features. Model saved to `forest_class` dill
-*. `logit_tfidf.py` trains a Logistic Regression classification using lemmatized TFIDF features. Model saved to `logit_tfidf` dill
-*. `rf_tfidf.py` trains a Random Forest classification using lemmatized TFIDF features. Model saved to `forest_tfidf` dill
-*. `full_model.py` aggregates models using bagging with random forest.
+* `parse_raw.py` pulls reviews, processes text, and generates features and lemmatized text
+* `nb_class.py` trains a Multinomial Naive Bayes classification using constructed features. Model saved to `mnb_class` dill
+* `logit_class.py` trains a Randomized Logistic Regression classification using constructed features. Model saved to `logit_class` dill
+* `rf_class.py` trains a Random Forest classification using constructed features. Model saved to `forest_class` dill
+* `logit_tfidf.py` trains a Logistic Regression classification using lemmatized TFIDF features. Model saved to `logit_tfidf` dill
+* `rf_tfidf.py` trains a Random Forest classification using lemmatized TFIDF features. Model saved to `forest_tfidf` dill
+* `full_model.py` aggregates models using bagging with random forest.
 
 ## Data
 Amazon Electronics Review Dataset from http://jmcauley.ucsd.edu/data/amazon/
