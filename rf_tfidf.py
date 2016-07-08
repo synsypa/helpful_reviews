@@ -79,42 +79,18 @@ class TextCleanTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
         cleaned = X[self.cols[0]].apply(self.cleaner)
         return cleaned
 
-# SpaCy Tokenizer
-def spacy_tokenize(text):
-    # Tokenize with spaCy
-    parser = English(entity=False, parser=False, matcher=False)
-    tokens = parser(text)
-
-    #lemmatize
-    lemmas = []
-    for t in tokens:
-        lemmas.append(t.lemma_.lower().strip() if t.lemma_ != '-PRON-' else t.lower_)
-    tokens = lemmas
-
-    # remove stopwords
-    tokens = [tok for tok in tokens if tok not in stopwords.words('english')]
-    
-    # remove whitespace
-    while "" in tokens:
-        tokens.remove("")
-    while " " in tokens:
-        tokens.remove(" ")
-    while "\n" in tokens:
-        tokens.remove("\n")
-    while "\n\n" in tokens:
-        tokens.remove("\n\n")
-        
-    return tokens
-
 # Random Forest Pipeline
 search = {'vectorize__min_df':[100, 200, 300],
-            'vectorize__max_df':[.8, .9, .95]}
+        'vectorize__max_df':[.8, .9, .95],
+        'forest__max_leaf_nodes':[None, 5, 10, 20],
+        'forest__max_depth':[None, 2, 5, 10],
+        'forest__min_samples_leaf':[5, 10, 15, 20],
+        'forest__min_samples_split':[100, 150, 200, 250]}
 rf_tfidf = Pipeline([
-    ('select', ColumnTransformer(['text'])),
-    ('clean', TextCleanTransformer(['text'])),
-    ('vectorize', TfidfVectorizer(tokenizer=spacy_tokenize, ngram_range=(1,1))),
-    #('vectorize', TfidfVectorizer(ngram_range=(1,1), min_df=200, max_df=.95)),
-    ('forest', RandomForestClassifier(max_leaf_nodes=None, max_depth=None, min_samples_leaf=10, min_samples_split=200))
+    ('select', ColumnTransformer(['lemma'])),
+    ('clean', TextCleanTransformer(['lemma'])),
+    ('vectorize', TfidfVectorizer(ngram_range=(1,1))),#, min_df=200, max_df=.95)),
+    ('forest', RandomForestClassifier()),#max_leaf_nodes=None, max_depth=None, min_samples_leaf=10, min_samples_split=200))
     ])
 
 # Fit Model

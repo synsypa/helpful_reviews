@@ -18,7 +18,7 @@ query = """
                score, summary, text
         FROM reviews 
         WHERE num_help >= 5
-        LIMIT 100000
+        LIMIT 200000
         """
 df = pd.read_sql_query(query, con)
 
@@ -67,6 +67,16 @@ df['score_pos'] = np.where(df['score'] > 3, 1, 0)
 df['score_neg'] = np.where(df['score'] < 3, 1, 0)
 df['score_low'] = np.where(df['score_chg'] < 0, 1, 0)
 df['score_high'] = np.where(df['score_chg'] > 0, 1, 0)
+
+# Construct Balanced Subset
+#df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
+good_df = df[df['help_class'] == 1]
+good_df = good_df.sample(n=37500, random_state=123456)
+
+bad_df = df[df['help_class'] == 0]
+bad_df = bad_df.sample(n=37500, random_state=123456)
+
+df = good_df.append(bad_df)
 
 ### Generate Text-based features
 parser = English()#parser=False)#, entity=False, matcher=False)
@@ -152,7 +162,7 @@ def quant_sent(spacy):
     return 1. * sum(nsent)/len(nsent)
 
 # Apply functions
-cdf['lemma'] = df['parsed'].apply(lemma_text)
+df['lemma'] = df['parsed'].apply(lemma_text)
 df['length'] = df['parsed'].apply(count_wrd)
 
 df['desc_coarse'] = df['parsed'].apply(coarse_desc)
