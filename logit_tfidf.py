@@ -29,16 +29,16 @@ df = pd.read_pickle('parsed_df.pkl')
 # Construct Balanced Subset
 #df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
 
-good_df = df[df['help_class'] == 1]
-good_df = good_df.sample(n=20000, random_state=123456)
+#good_df = df[df['help_class'] == 1]
+#good_df = good_df.sample(n=20000, random_state=123456)
 
-bad_df = df[df['help_class'] == 0]
-bad_df = bad_df.sample(n=20000, random_state=123456)
+#bad_df = df[df['help_class'] == 0]
+#bad_df = bad_df.sample(n=20000, random_state=123456)
 
-cut_df = good_df.append(bad_df)
+#cut_df = good_df.append(bad_df)
 
-X_df = cut_df.drop('help_class', axis = 1)
-y_df = cut_df['help_class']
+X_df = df.drop('help_class', axis = 1)
+y_df = df['help_class']
 
 # Column Selection Transformer
 class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
@@ -111,8 +111,8 @@ def spacy_tokenize(text):
 
 # Randomized Logit Pipeline
 rlr_tfidf = Pipeline([
-    ('select', ColumnTransformer(['text'])),
-    ('clean', TextCleanTransformer(['text'])),
+    ('select', ColumnTransformer(['lemma'])),
+    ('clean', TextCleanTransformer(['lemma'])),
     ('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
     #('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
     ('tfidf', TfidfTransformer()),

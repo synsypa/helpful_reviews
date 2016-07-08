@@ -24,6 +24,9 @@ from sklearn.cross_validation import cross_val_score
 #df = pd.read_pickle('parsed_df.pkl')
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
+X_df = df.drop('help_class', axis = 1)
+y_df = df['help_class']
+
 # Column Selection Transformer
 class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
     """
