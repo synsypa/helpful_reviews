@@ -39,6 +39,7 @@ df = pd.read_pickle('parsed_df_wlem.pkl')
 
 #X_df = df.drop('help_class', axis = 1)
 X_df = df['lemma']
+#X_df = df['text']
 y_df = df['help_class']
 
 # Column Selection Transformer
@@ -110,21 +111,33 @@ def spacy_tokenize(text):
         
     return tokens
 
-# Randomized Logit Pipeline
-rlr_tfidf = Pipeline([
-    ('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
+# Logit Pipeline
+logit_tfidf = Pipeline([
     #('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
-    ('tfidf', TfidfTransformer()),
-    #('tfidf', TfidfVectorizer(tokenizer=spacy_tokenize,, min_df=100, max_df=.90)),
+    #('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
+    #('tfidf', TfidfTransformer()),
+    ('vectorize', TfidfVectorizer(ngram_range=(1,1), min_df=100, max_df=.95)),
     ('logit', LogisticRegression())
     ])
 
+#GridSearch CV
+#grid = GridSearchCV(logit_tfidf, param_grid=search, cv=5, scoring='accuracy')
+#grid.fit(X_df, y_df)
+#print grid.best_params_
+#print grid.best_score_
+
 # Fit Model
-rlr_tfidf.fit(X_df, y_df)
-dill.dump(rlr_tfidf, open('logit_tfidf', 'w'), recurse=True)
+logit_tfidf.fit(X_df, y_df)
+dill.dump(logit_tfidf, open('logit_tfidf', 'w'), recurse=True)
 
 # Accuracy
-acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
+acc = cross_val_score(logit_tfidf, X_df, y_df, cv=5, scoring='accuracy').mean()
 print acc
-roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
-print roc_auc
+
+### lemma/hash = .686
+### lemma/min 100/max 95 = .695
+### text/hash = .689
+
+# Area under Curve
+#roc_auc = cross_val_score(logit_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
+#print roc_auc
