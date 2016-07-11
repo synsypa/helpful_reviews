@@ -21,11 +21,11 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 
 ## Files
 * `parse_raw.py` pulls reviews, processes text, and generates features and lemmatized text
-* `nb_class.py` trains a Multinomial Naive Bayes classification using constructed features. Model saved to `mnb_class` dill (Accuracy = %)
-* `logit_class.py` trains a Randomized Logistic Regression classification using constructed features. Model saved to `logit_class` dill (Accuracy = %)
-* `rf_class.py` trains a Random Forest classification using constructed features. Model saved to `forest_class` dill (Accuracy = %)
-* `logit_tfidf.py` trains a Logistic Regression classification using lemmatized TFIDF features. Model saved to `logit_tfidf` dill (Accuracy = 69.5%)
-* `rf_tfidf.py` trains a Random Forest classification using lemmatized TFIDF features. Model saved to `forest_tfidf` dill (Accuracy = %)
+* `nb_class.py` trains a Multinomial Naive Bayes classification using constructed features. Model saved to `mnb_class` dill (Accuracy = **%**)
+* `logit_class.py` trains a Randomized Logistic Regression classification using constructed features. Model saved to `logit_class` dill (Accuracy = **%**)
+* `rf_class.py` trains a Random Forest classification using constructed features. Model saved to `forest_class` dill (Accuracy = **%**)
+* `logit_tfidf.py` trains a Logistic Regression classification using lemmatized TFIDF features. Model saved to `logit_tfidf` dill (Accuracy = **69.5%**)
+* `rf_tfidf.py` trains a Random Forest classification using lemmatized TFIDF features. Model saved to `forest_tfidf` dill (Accuracy = **%**)
 * `full_model.py` aggregates models using bagging with random forest.
 * `svm_tfidf.py` is unused. 
 

@@ -71,26 +71,26 @@ class TextCleanTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
         return cleaned
 
 # Random Forest Pipeline
-search = {'vectorize__min_df':[100, 200, 300],
-        'vectorize__max_df':[.8, .9, .95],
-        'forest__max_leaf_nodes':[None, 5, 10, 20],
-        'forest__max_depth':[None, 2, 5, 10],
-        'forest__min_samples_leaf':[5, 10, 15, 20],
-        'forest__min_samples_split':[100, 150, 200, 250]}
+## min leaf 5 /  max leaf = None / max depth = 50 / min split = 250: acc = .640
+## min leaf 5 /  max leaf = None / max depth = 300 / min split = 250: acc = .643
+## min leaf 20 /  max leaf = None / max depth = 300 / min split = 250: acc = .639
+
 rf_tfidf = Pipeline([
-    ('vectorize', TfidfVectorizer(ngram_range=(1,1))),#, min_df=200, max_df=.95)),
-    ('forest', RandomForestClassifier()),#max_leaf_nodes=None, max_depth=None, min_samples_leaf=10, min_samples_split=200))
+    ('vectorize', TfidfVectorizer(ngram_range=(1,1), min_df=100, max_df=.95)),
+    ('forest', RandomForestClassifier(max_leaf_nodes=None, max_depth=300, min_samples_split=250, min_samples_leaf=5)),
     ])
 
 # Fit Model
-grid = GridSearchCV(rf_tfidf, param_grid=search, cv=5, scoring='accuracy')
-grid.fit(X_df, y_df)
-#rf_tfidf.fit(X_df, y_df)
-print grid.best_params_
+rf_tfidf.fit(X_df, y_df)
 
-#dill.dump(rf_tfidf, open('forest_tfidf', 'w'), recurse=True)
-dill.dump(grid, open('forest_tfidf', 'w'), recurse=True)
+#grid = GridSearchCV(rf_tfidf, param_grid=search, cv=5, scoring='accuracy')
+#grid.fit(X_df, y_df)
+#print grid.best_params_
 
-# Accuracy
-acc = grid.best_score_
+dill.dump(rf_tfidf, open('forest_tfidf', 'w'), recurse=True)
+#dill.dump(grid, open('forest_tfidf', 'w'), recurse=True)
+
+# Accuracy = .642
+acc = cross_val_score(rf_tfidf, X_df, y_df, cv=5, scoring='accuracy').mean()
+#acc = grid.best_score_
 print acc
