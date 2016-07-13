@@ -177,7 +177,7 @@ class ArrayTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
     def transform(self, X):
         assert(type(X) == np.ndarray), 'Features must be a numpy array'
         X_ar = X.reshape(5, len(X)/5).transpose()
-        return X_ar
+        return X_ar	
 
 # Feature Union
 all_features = FeatureUnion([
