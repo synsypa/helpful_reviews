@@ -17,18 +17,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Load Data
-df = pd.read_pickle('parsed_df.pkl')
-
-# Construct Balanced Subset
-#df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
-
-good_df = df[df['help_class'] == 1]
-good_df = good_df.sample(n=20000, random_state=123456)
-
-bad_df = df[df['help_class'] == 0]
-bad_df = bad_df.sample(n=20000, random_state=123456)
-
-cut_df = good_df.append(bad_df)
+df = pd.read_pickle('parsed_df_wlem.pkl')
 
 X_df = cut_df.drop('help_class', axis = 1)
 y_df = cut_df['help_class']
@@ -66,6 +55,7 @@ rlr_mod = Pipeline([
 
 # Accuracy Score
 acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
+print acc
 roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
 
 

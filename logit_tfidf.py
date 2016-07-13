@@ -26,18 +26,6 @@ warnings.filterwarnings('ignore')
 # Load data
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-# Construct Balanced Subset
-#df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
-
-#good_df = df[df['help_class'] == 1]
-#good_df = good_df.sample(n=20000, random_state=123456)
-
-#bad_df = df[df['help_class'] == 0]
-#bad_df = bad_df.sample(n=20000, random_state=123456)
-
-#cut_df = good_df.append(bad_df)
-
-#X_df = df.drop('help_class', axis = 1)
 #X_df = df['lemma']
 X_df = df['text']
 y_df = df['help_class']
@@ -114,17 +102,10 @@ def spacy_tokenize(text):
 # Logit Pipeline
 logit_tfidf = Pipeline([
     #('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
-    #('hash', HashingVectorizer(stop_words='english', ngram_range=(1,1))),
     #('tfidf', TfidfTransformer()),
     ('vectorize', TfidfVectorizer(ngram_range=(1,1), min_df=100, max_df=.95)),
     ('logit', LogisticRegression())
     ])
-
-#GridSearch CV
-#grid = GridSearchCV(logit_tfidf, param_grid=search, cv=5, scoring='accuracy')
-#grid.fit(X_df, y_df)
-#print grid.best_params_
-#print grid.best_score_
 
 # Fit Model
 logit_tfidf.fit(X_df, y_df)
