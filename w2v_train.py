@@ -20,6 +20,7 @@ from sklearn.cross_validation import train_test_split
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
 X_df = df[['lemma']]
+#X_df = df[['text']]
 y_df = df['help_class']
 
 # List of Lemmas
@@ -49,6 +50,7 @@ def avg_vec(wordlist,size):
 
 # Produce lemma list for training
 X_df['lem_list'] = X_df['lemma'].apply(lemma_list)
+#X_df['lem_list'] = X_df['text'].apply(lemma_list)
 X_train, X_test, y_train, y_test = train_test_split(X_df['lem_list'], y_df, test_size=0.2, random_state=123456)
 
 #size of hidden layer (length of continuous word representation)
@@ -70,5 +72,6 @@ dill.dump(logit_w2v, open('w2v', 'w'), recurse=True)
 
 y_pred=logit_w2v.predict(X_test)
 
-# accuracy = .660
+# accuracy = .660, lemma
+# accuracy = .654, word
 print accuracy_score(y_test,y_pred)

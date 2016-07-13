@@ -38,8 +38,8 @@ df = pd.read_pickle('parsed_df_wlem.pkl')
 #cut_df = good_df.append(bad_df)
 
 #X_df = df.drop('help_class', axis = 1)
-X_df = df['lemma']
-#X_df = df['text']
+#X_df = df['lemma']
+X_df = df['text']
 y_df = df['help_class']
 
 # Column Selection Transformer
@@ -135,8 +135,12 @@ acc = cross_val_score(logit_tfidf, X_df, y_df, cv=5, scoring='accuracy').mean()
 print acc
 
 ### lemma/hash = .686
-### lemma/min 100/max 95 = .695
 ### text/hash = .689
+### lemma/min 100/max 95 = .695
+### text/min 100/max 95 = .696
+### lemma/stop/min 100/max 95 = .695 
+### text/stop/min 100/max 95 = .696
+
 
 # Area under Curve
 #roc_auc = cross_val_score(logit_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
