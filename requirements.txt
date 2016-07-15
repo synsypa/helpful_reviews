@@ -1,0 +1,14 @@
+dill==0.2.1
+Flask==0.10.1
+gunicorn==19.3.0
+Jinja2==2.7.2
+oauth==1.0.1
+oauthlib==0.7.2
+requests>=2.2.1
+simplejson==3.8.0
+numpy==1.11.0
+pandas==0.18.1
+bokeh==0.11.1
+sklearn==0.17.1
+spacy==0.101.0
+bs4>=4.4.0

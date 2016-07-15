@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title> {{ticker}} data </title>
+		<link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-0.11.1.min.css" type="text/css" />
+		<script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-0.11.1.min.js"></script>
+		{{ script | safe }}
+	</head>
+	<body>
+		<div class=page>
+			<h1>Generated Graph for {{ticker}}<br><a href="/index">Back</a></h1>
+			{{ div | safe }}
+		</div>
+	</body>
+</html>

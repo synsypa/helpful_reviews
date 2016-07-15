@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Reviewing Well</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<!--<link rel=stylesheet type=text/css href='/static/style.css'>-->
+	</head>
+	<body>
+		<div class=page>
+  			<h1>Reviewing Well</h1>
+			<div class='container'>
+
+			<h4>Write your Review.</h4>
+
+			<form role='form' method='POST' action='index'>
+				<div class='form-group'>
+					<textarea name='review' class='form-control' id='url-box' placeholder='Enter your Review Here...' style='max-width: 600px;'' autofocus required></textarea>
+				</div>
+				<select name="score"> 
+					<option value="same">same as average</option>
+        			<option value="above">above average</option>
+        			<option value="below">below average</option>        
+    			</select>
+				<button type="submit" class="btn btn-default">Submit</button>
+			</form>
+			</div>
+		</div>
+	</body>
+</html>
