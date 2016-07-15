@@ -23,7 +23,8 @@ from sklearn.cross_validation import cross_val_score
 # Load data
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-X_df = df['lemma']
+#X_df = df['lemma']
+X_df = df['text']
 y_df = df['help_class']
 
 # Column Selection Transformer
@@ -89,7 +90,7 @@ dill.dump(rf_tfidf, open('forest_tfidf', 'w'), recurse=True)
 #dill.dump(grid, open('forest_tfidf', 'w'), recurse=True)
 
 # Accuracy = .642 (lemma)
-# Accuracy = .642 (lemma)
+# Accuracy = . (text)
 
 acc = cross_val_score(rf_tfidf, X_df, y_df, cv=5, scoring='accuracy').mean()
 #acc = grid.best_score_

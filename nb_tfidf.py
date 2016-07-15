@@ -20,11 +20,10 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import cross_val_score
 
 # Load data
-#df = pd.read_pickle('parsed_df.pkl')
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-#X_df = df.drop('help_class', axis = 1)
-X_df = df['lemma']
+X_df = df['text']
+#X_df = df['lemma']
 y_df = df['help_class']
 
 # Column Selection Transformer
@@ -80,6 +79,6 @@ nb_tfidf.fit(X_df, y_df)
 
 dill.dump(nb_tfidf, open('mnb_tfidf', 'w'), recurse=True)
 
-# Accuracy = .650
+# Accuracy = .650 (lemma)
 acc = cross_val_score(nb_tfidf, X_df, y_df, cv=5, scoring='accuracy').mean()
 print acc

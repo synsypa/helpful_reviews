@@ -15,21 +15,10 @@ from sklearn.cross_validation import cross_val_score
 from itertools import combinations
 
 # Load Data
-df = pd.read_pickle('parsed_df.pkl')
+df = pd.read_pickle('parsed_df_wlem.pkl')
 
-# Construct Balanced Subset
-#df['help_class'] = np.where(df['help_rate'] >= .8, 1, 0)
-
-good_df = df[df['help_class'] == 1]
-good_df = good_df.sample(n=20000, random_state=123456)
-
-bad_df = df[df['help_class'] == 0]
-bad_df = bad_df.sample(n=20000, random_state=123456)
-
-cut_df = good_df.append(bad_df)
-
-X_df = cut_df.drop('help_class', axis = 1)
-y_df = cut_df['help_class']
+X_df = df.drop(['help_class', 'text', 'lemma'], axis = 1)
+y_df = df['help_class']
 
 # Column Selection Transformer
 class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
@@ -52,14 +41,20 @@ class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 
 # GridSearchCV SVM Pipeline
 features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct', 
-            'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant']
+            'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant',
+            'score_low', 'score_high']]
+
 search = {'kernel': [str('linear'), str('poly'), str('rbf')]}
 
 svm_mod = Pipeline([
     ('select', ColumnTransformer(features)),
     ('svm', GridSearchCV(SVC(), param_grid=search, cv=5, scoring='accuracy'))
     ])
+svm_mod.fit(X_df, y_df)
+
+# Accuracy
+acc = rf_mod.named_steps['svm'].best_score_
+print acc 
 
 # Fit Model
-svm_mod.fit(X_df, y_df)
 dill.dump(svm_mod, open('svm_class', 'w'), recurse=True)
