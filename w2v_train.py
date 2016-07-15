@@ -59,6 +59,8 @@ dimsize=400
 # Train Word2Vec
 model = Word2Vec(X_train.values, size=dimsize, window=5, min_count=5, workers=4)
 
+dill.dump(model, open('w2v_model', 'w'), recurse=True)
+
 #create average vector for train and test from model
 #returned list of numpy arrays are then stacked 
 X_train=np.concatenate([avg_vec(w,dimsize) for w in X_train])

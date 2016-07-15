@@ -13,7 +13,7 @@ from gensim.models import Word2Vec
 from nltk.corpus import stopwords
     
 from sklearn.metrics import accuracy_score, roc_auc_score
-from sklearn.naive_bayes import MultinomialNB
+from sklearn.naive_bayes import GaussianNB
 from sklearn.cross_validation import train_test_split
 
 # Load Data
@@ -65,7 +65,7 @@ X_train=np.concatenate([avg_vec(w,dimsize) for w in X_train])
 X_test=np.concatenate([avg_vec(w,dimsize) for w in X_test])
 
 # fit model
-nb_w2v = MultinomialNB()
+nb_w2v = GaussianNB()
 nb_w2v.fit(X_train, y_train)
 
 dill.dump(nb_w2v, open('nb_w2v', 'w'), recurse=True)

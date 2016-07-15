@@ -1,4 +1,4 @@
-# ipython notebooks #
+d# ipython notebooks #
 #####################
 *.ipynb
 
@@ -11,6 +11,10 @@ logit_class
 forest_class
 logit_tfidf
 forest_tfidf
+mnb_tfidf
+w2v
+logit_w2v
+nb_w2v
 
 # data #
 ########
