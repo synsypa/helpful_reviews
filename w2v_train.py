@@ -68,7 +68,7 @@ X_test=np.concatenate([avg_vec(w,dimsize) for w in X_test])
 logit_w2v = LogisticRegression()
 logit_w2v.fit(X_train, y_train)
 
-dill.dump(logit_w2v, open('w2v', 'w'), recurse=True)
+dill.dump(logit_w2v, open('logit_w2v', 'w'), recurse=True)
 
 y_pred=logit_w2v.predict(X_test)
 

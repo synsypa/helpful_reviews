@@ -19,7 +19,7 @@ warnings.filterwarnings('ignore')
 # Load Data
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-X_df = df.drop(['help_class', 'text'], axis = 1)
+X_df = df.drop(['help_class', 'text', 'lemma'], axis = 1)
 y_df = df['help_class']
 
 # Column Selection Transformer
@@ -56,7 +56,6 @@ rlr_mod = Pipeline([
 # Accuracy Score = .677
 acc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
 print acc
-#roc_auc = cross_val_score(rlr_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
 
 
 # Fit Model

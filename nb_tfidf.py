@@ -13,16 +13,17 @@ from nltk.corpus import stopwords
 
 import sklearn.metrics
 from sklearn.pipeline import Pipeline
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import TfidfVectorizer
 
 from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import cross_val_score
 
 # Load data
+#df = pd.read_pickle('parsed_df.pkl')
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
+#X_df = df.drop('help_class', axis = 1)
 X_df = df['lemma']
 y_df = df['help_class']
 
@@ -68,29 +69,17 @@ class TextCleanTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
         cleaned = X[self.cols[0]].apply(self.cleaner)
         return cleaned
 
-# Random Forest Pipeline
-## min leaf 5 /  max leaf = None / max depth = 50 / min split = 250: acc = .640
-## min leaf 5 /  max leaf = None / max depth = 300 / min split = 250: acc = .643
-## min leaf 20 /  max leaf = None / max depth = 300 / min split = 250: acc = .639
-
-rf_tfidf = Pipeline([
+# Multinomial Naive Bayes
+nb_tfidf = Pipeline([
     ('vectorize', TfidfVectorizer(ngram_range=(1,1), min_df=100, max_df=.95)),
-    ('forest', RandomForestClassifier(max_leaf_nodes=None, max_depth=300, min_samples_split=250, min_samples_leaf=5)),
+    ('multi_nb', MultinomialNB()),
     ])
 
 # Fit Model
-rf_tfidf.fit(X_df, y_df)
+nb_tfidf.fit(X_df, y_df)
 
-#grid = GridSearchCV(rf_tfidf, param_grid=search, cv=5, scoring='accuracy')
-#grid.fit(X_df, y_df)
-#print grid.best_params_
+dill.dump(nb_tfidf, open('mnb_tfidf', 'w'), recurse=True)
 
-dill.dump(rf_tfidf, open('forest_tfidf', 'w'), recurse=True)
-#dill.dump(grid, open('forest_tfidf', 'w'), recurse=True)
-
-# Accuracy = .642 (lemma)
-# Accuracy = .642 (lemma)
-
-acc = cross_val_score(rf_tfidf, X_df, y_df, cv=5, scoring='accuracy').mean()
-#acc = grid.best_score_
+# Accuracy = .650
+acc = cross_val_score(nb_tfidf, X_df, y_df, cv=5, scoring='accuracy').mean()
 print acc

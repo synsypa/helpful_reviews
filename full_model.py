@@ -23,8 +23,11 @@ from sklearn.cross_validation import cross_val_score
 MultiNBModel = dill.load(open('mnb_class'))
 LogitModel = dill.load(open('logit_class'))
 ForestModel = dill.load(open('forest_class'))
-#LogitTfidf = dill.load(open('logit_tfidf'))
+LogitTfidf = dill.load(open('logit_tfidf'))
 ForestTfidf = dill.load(open('forest_tfidf'))
+LogitW2V = dill.load(open('w2v'))
+#LogitW2V = dill.load(open('logit_w2v'))
+#NBW2V = dill.load(open('nb_w2v'))
 
 # Text Feature Transformer
 class LangTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
@@ -41,78 +44,78 @@ class LangTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
     
     # Function to count words in review
     def count_wrd(self, spacy):
-    words = 0
-    for token in spacy:
-        if token.pos_ not in ["PUNCT", "SYM", "X", "EOL", "SPACE"]:    
-            words += 1
-    return words 
+        words = 0
+        for token in spacy:
+            if token.pos_ not in ["PUNCT", "SYM", "X", "EOL", "SPACE"]:    
+                words += 1
+        return words 
 
     # Count words per sentence
     def count_sent(self, spacy):
-    nsent = []
-    for sent in spacy.sents:
-        nsent.append(count_wrd(sent))
-    return 1. * sum(nsent)/len(nsent)
+        nsent = []
+        for sent in spacy.sents:
+            nsent.append(count_wrd(sent))
+        return 1. * sum(nsent)/len(nsent)
 
     # Count # of adj/adv 
     def coarse_desc(self, spacy):
-    descw_ = 0
-    for token in spacy:
-        if token.pos_ in ["ADJ", "ADV"]:
-            descw_ += 1
-    return descw_
+        descw_ = 0
+        for token in spacy:
+            if token.pos_ in ["ADJ", "ADV"]:
+                descw_ += 1
+        return descw_
 
     # Count adj/adv per sentence
     def coarse_sent(self, spacy):
-    nsent = []
-    for sent in spacy.sents:
-        nsent.append(coarse_desc(sent))
-    return 1. * sum(nsent)/len(nsent)
+        nsent = []
+        for sent in spacy.sents:
+            nsent.append(coarse_desc(sent))
+        return 1. * sum(nsent)/len(nsent)
 
     # Count # of comparatives/superlatives
     def fine_desc(self, spacy):
-    descw_ = 0
-    for token in spacy:
-        if token.tag_ in ["JJR", "JJS", "RBR", "RBS"]:
-            descw_ += 1
-    return descw_
+        descw_ = 0
+        for token in spacy:
+            if token.tag_ in ["JJR", "JJS", "RBR", "RBS"]:
+                descw_ += 1
+        return descw_
 
     # Count comp/super per sentence
     def fine_sent(self, spacy):
-    nsent = []
-    for sent in spacy.sents:
-        nsent.append(fine_desc(sent))
-    return 1. * sum(nsent)/len(nsent)
+        nsent = []
+        for sent in spacy.sents:
+            nsent.append(fine_desc(sent))
+        return 1. * sum(nsent)/len(nsent)
 
     # Count # of named entities
     def entity(self, spacy):
-    entw_ = 0
-    for token in spacy:
-        if token.ent_type_ != "":
-            entw_ += 1
-    return entw_
+        entw_ = 0
+        for token in spacy:
+            if token.ent_type_ != "":
+                entw_ += 1
+        return entw_
 
     # Count named entities per sentence
     def ent_sent(self, spacy):
-    nsent = []
-    for sent in spacy.sents:
-        nsent.append(entity(sent))
-    return 1. * sum(nsent)/len(nsent)
+        nsent = []
+        for sent in spacy.sents:
+            nsent.append(entity(sent))
+        return 1. * sum(nsent)/len(nsent)
 
     # Count # of Money or Quantity entities
     def quant(self, spacy):
-    entw_ = 0
-    for token in spacy:
-        if token.ent_type_ in ["QUANTITY", "MONEY", "PERCENT"]:
-            entw_ += 1
-    return entw_
+        entw_ = 0
+        for token in spacy:
+            if token.ent_type_ in ["QUANTITY", "MONEY", "PERCENT"]:
+                entw_ += 1
+        return entw_
 
     # Count money/quant entities per sentence
     def quant_sent(self, spacy):
-    nsent = []
-    for sent in spacy.sents:
-        nsent.append(quant(sent))
-    return 1. * sum(nsent)/len(nsent)
+        nsent = []
+        for sent in spacy.sents:
+            nsent.append(quant(sent))
+        return 1. * sum(nsent)/len(nsent)
     
     def fit(self, X, y=None):
         return self
@@ -181,11 +184,9 @@ class ArrayTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 
 # Feature Union
 all_features = FeatureUnion([
-    ('multiNB', PredTransformer(MultiNBModel)),
-    ('logit', PredTransformer(LogitModel)),
     ('forest', PredTransformer(ForestModel)),
     ('tf_logit', PredTransformer(LogitTfidf)),
-    ('tf_forest', PredTransformer(ForestTfidf))
+    ('w2v_logit', PredTransformer(LogitW2V))
     ])
 
 # Full Pipelinee

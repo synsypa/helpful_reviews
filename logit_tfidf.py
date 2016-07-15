@@ -122,7 +122,3 @@ print acc
 ### lemma/stop/min 100/max 95 = .695 
 ### text/stop/min 100/max 95 = .696
 
-
-# Area under Curve
-#roc_auc = cross_val_score(logit_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
-#print roc_auc

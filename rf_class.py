@@ -17,7 +17,7 @@ from sklearn.cross_validation import cross_val_score
 # Load Parsed Data
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-X_df = df.drop(['help_class', 'text'], axis = 1)
+X_df = df.drop(['help_class', 'text', 'lemma'], axis = 1)
 y_df = df['help_class']
 
 # Column Selection Transformer
