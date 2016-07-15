@@ -28,32 +28,41 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 
 ### NLP Features Models
 * `nb_class.py` trains a Multinomial Naive Bayes classification using constructed features. 
+
     Model saved to `mnb_class` dill (Accuracy = **59.1%**)
 
 * `logit_class.py` trains a Randomized Logistic Regression classification using constructed features. 
+
     Model saved to `logit_class` dill (Accuracy = **67.7%**)
 
 * `rf_class.py` trains a Random Forest classification using constructed features. 
+
     Model saved to `forest_class` dill (Accuracy = **68.6%**)
 
 * `svm_class.py` trains a Support Vector Machine classification using constructed features (Kernal is determined via GridSearchCV). 
+
     Model saved to `svm_class` dill (Accuracy = **%**)
 
 ### TFIDF Models
 * `mnb_tfidf.py` trains a Multinomial Naive Bayes classification using TFIDF features. (Includes code for using lemmatized text as features). 
+
     Model saved to `mnb_tfidf` dill (Accuracy = **65.3%** (text), **65.0%** (lemma))
 
 * `logit_tfidf.py` trains a Logistic Regression classification using TFIDF features. (Includes code for using lemmatized text as features).
+
     Model saved to `logit_tfidf` dill (Accuracy = **69.6%** (text), **69.5%** (lemma))
 
 * `rf_tfidf.py` trains a Random Forest classification using TFIDF features. (Includes code for using lemmatized text as features). 
+
     Model saved to `forest_tfidf` dill (Accuracy = **%** (text), **64.2%** (lemma))
 
 ### Word2Vec Models
 * `nb_w2v.py` trains a Gaussian Naive Bayes classification using word vectors generated from a word2vec model based on lemmatized text. (Includes code for using non-lemma text as features). 
+
     Model saved to `nb_w2v` dill (Accuracy = **%** (text), **%** (lemma))
 
 * `logit_w2v.py` trains a Logistic Regression classification using word vectors generated from a word2vec model based on lemmatized text. (Includes code for using non-lemma text as features). 
+
     Model saved to `logit_w2v` dill (Accuracy = **65.4%** (text), **66.0%** (lemma))
 
 ### Full Model
