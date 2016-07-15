@@ -15,8 +15,8 @@ from sklearn.cross_validation import cross_val_score
 # Read Data
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-X_df = cut_df.drop('help_class', axis = 1)
-y_df = cut_df['help_class']
+X_df = df.drop(['help_class', 'text'], axis = 1)
+y_df = df['help_class']
 
 # Column Selection Transformer
 class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
@@ -48,10 +48,10 @@ mnb_mod = Pipeline([
                     ('mnb', MultinomialNB())
                     ])
 
-# Accuracy Score
+# Accuracy Score = .591
 acc = cross_val_score(mnb_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
 print acc
-roc_auc = cross_val_score(mnb_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
+#roc_auc = cross_val_score(mnb_mod, X_df, y_df, cv=5, scoring='roc_auc').mean()
 
 # Fit Model
 mnb_mod.fit(X_df, y_df)

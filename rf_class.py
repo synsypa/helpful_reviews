@@ -17,8 +17,8 @@ from sklearn.cross_validation import cross_val_score
 # Load Parsed Data
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-X_df = cut_df.drop('help_class', axis = 1)
-y_df = cut_df['help_class']
+X_df = df.drop(['help_class', 'text'], axis = 1)
+y_df = df['help_class']
 
 # Column Selection Transformer
 class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
@@ -56,7 +56,7 @@ rf_mod = Pipeline([
 rf_mod.fit(X_df, y_df)
 dill.dump(rf_mod, open('forest_class', 'w'), recurse=True)
 
-# Store Score
+# Store Score, Accuracy = .688
 acc = cross_val_score(rf_mod, X_df, y_df, cv=5, scoring='accuracy').mean()
 print acc
 weights = dict(zip(features, rf_mod.named_steps['forest'].feature_importances_))
