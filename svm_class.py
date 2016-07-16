@@ -42,7 +42,7 @@ class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 # GridSearchCV SVM Pipeline
 features = ['length', 'dfine_pct', 'dcoarse_pct', 'ent_pct', 'quant_pct', 
             'sent_len', 'sent_fine', 'sent_coarse', 'sent_ent',  'sent_quant',
-            'score_low', 'score_high']]
+            'score_low', 'score_high']
 
 search = {'kernel': [str('linear'), str('poly'), str('rbf')]}
 

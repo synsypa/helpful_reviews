@@ -23,7 +23,8 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 *Text features processed with spaCy*
 
 ## Files
-* `parse_raw.py` pulls reviews, processes text, and generates features and lemmatized text. 
+* `parse_raw.py` pulls reviews, processes text, and generates features and lemmatized text.
+
     Saves resultant dataframe to `parsed_df_wlem.pkl`.
 
 ### NLP Features Models
@@ -54,7 +55,7 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 
 * `rf_tfidf.py` trains a Random Forest classification using TFIDF features. (Includes code for using lemmatized text as features). 
 
-    Model saved to `forest_tfidf` dill (Accuracy = **%** (text), **64.2%** (lemma))
+    Model saved to `forest_tfidf` dill (Accuracy = **63.9%** (text), **64.2%** (lemma))
 
 ### Word2Vec Models
 * `nb_w2v.py` trains a Gaussian Naive Bayes classification using word vectors generated from a word2vec model based on lemmatized text. (Includes code for using non-lemma text as features). 
