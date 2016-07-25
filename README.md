@@ -60,7 +60,7 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 ### Word2Vec Models
 * `nb_w2v.py` trains a Gaussian Naive Bayes classification using word vectors generated from a word2vec model based on lemmatized text. (Includes code for using non-lemma text as features). 
 
-    Model saved to `nb_w2v` dill (Accuracy = **%** (text), **%** (lemma))
+    Model saved to `nb_w2v` dill (Accuracy = **%** (text), **60.5%** (lemma))
 
 * `logit_w2v.py` trains a Logistic Regression classification using word vectors generated from a word2vec model based on lemmatized text. (Includes code for using non-lemma text as features). 
 
