@@ -27,6 +27,10 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 
     Saves resultant dataframe to `parsed_df_wlem.pkl`.
 
+
+### Full Model
+* `full_model.py` aggregates best performing models from each set of features (Random Forest on NLP, Logit on TFIDF Lemmas. Word2Vec excluded for computation time) using bagging with random forest.
+
 ### NLP Features Models
 * `nb_class.py` trains a Multinomial Naive Bayes classification using constructed features. 
 
@@ -60,14 +64,11 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 ### Word2Vec Models
 * `nb_w2v.py` trains a Gaussian Naive Bayes classification using word vectors generated from a word2vec model based on lemmatized text. (Includes code for using non-lemma text as features). 
 
-    Model saved to `nb_w2v` dill (Accuracy = **%** (text), **60.5%** (lemma))
+    Model saved to `nb_w2v` dill (Accuracy = **60.2%** (text), **60.5%** (lemma))
 
 * `logit_w2v.py` trains a Logistic Regression classification using word vectors generated from a word2vec model based on lemmatized text. (Includes code for using non-lemma text as features). 
 
     Model saved to `logit_w2v` dill (Accuracy = **65.4%** (text), **66.0%** (lemma))
-
-### Full Model
-* `full_model.py` aggregates models using bagging with random forest.
 
 ## Data
 Amazon Electronics Review Dataset from http://jmcauley.ucsd.edu/data/amazon/

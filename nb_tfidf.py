@@ -22,8 +22,7 @@ from sklearn.cross_validation import cross_val_score
 # Load data
 df = pd.read_pickle('parsed_df_wlem.pkl')
 
-#X_df = df['lemma']
-X_df = df['text']
+X_df = df.drop('help_class', axis=1)
 y_df = df['help_class']
 
 # Column Selection Transformer
@@ -40,10 +39,7 @@ class ColumnTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 
     def transform(self, X):
         assert(type(X) == pd.core.frame.DataFrame), 'Features must be a DataFrame'
-        try:
-            return X.loc[:,(self.cols)]
-        except (TypeError, KeyError):
-            raise TypeError('Column selection must be list of strings')
+        return X.loc[:,self.cols]
 
 # Text Cleaning Transformer
 class TextCleanTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
@@ -69,7 +65,11 @@ class TextCleanTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
         return cleaned
 
 # Multinomial Naive Bayes
+feature = 'text'
+#feature = 'lemma'
+
 nb_tfidf = Pipeline([
+    ('select', ColumnTransformer(feature)),
     ('vectorize', TfidfVectorizer(ngram_range=(1,1), min_df=100, max_df=.95)),
     ('multi_nb', MultinomialNB()),
     ])
