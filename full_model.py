@@ -20,137 +20,25 @@ from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import cross_val_score
 
 # Load Models
-MultiNBModel = dill.load(open('mnb_class'))
-LogitModel = dill.load(open('logit_class'))
-ForestModel = dill.load(open('forest_class'))
-LogitTfidf = dill.load(open('logit_tfidf'))
-ForestTfidf = dill.load(open('forest_tfidf'))
-LogitW2V = dill.load(open('w2v'))
-#LogitW2V = dill.load(open('logit_w2v'))
-#NBW2V = dill.load(open('nb_w2v'))
+#MultiNBModel = dill.load(open('mnb_class'))     # acc = .591
+#LogitModel = dill.load(open('logit_class'))     # acc = .677
+ForestModel = dill.load(open('forest_class'))     # acc = .688
+#SvmModel = dill.load(open('svm_class'))         # acc = 
 
-# Text Feature Transformer
-class LangTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
-    """
-    Transform incoming data for prediction
-    """
-    def __init__(self):
-        self.parser = English()
-        pass
-    
-    # Function to lemmatize words in review
-    def lemma_text(self, spacy):
-        return ' '.join(token.lemma_.lower().strip() if token.lemma_ != "-PRON-" else token.lower_)
-    
-    # Function to count words in review
-    def count_wrd(self, spacy):
-        words = 0
-        for token in spacy:
-            if token.pos_ not in ["PUNCT", "SYM", "X", "EOL", "SPACE"]:    
-                words += 1
-        return words 
+#MultiNBTfidf = dill.load(open('mnb_tfidf'))     # acc = .653 (typext)
+LogitTfidf = dill.load(open('logit_tfidf'))     # acc = .696 (text)
+#ForestTfidf = dill.load(open('forest_tfidf'))   # acc = .642 (lemma)
 
-    # Count words per sentence
-    def count_sent(self, spacy):
-        nsent = []
-        for sent in spacy.sents:
-            nsent.append(count_wrd(sent))
-        return 1. * sum(nsent)/len(nsent)
+#LogitW2V = dill.load(open('logit_w2v'))        # acc = .660 (lemma)
+#NBW2V = dill.load(open('nb_w2v'))              # acc = .604 (lemma)
 
-    # Count # of adj/adv 
-    def coarse_desc(self, spacy):
-        descw_ = 0
-        for token in spacy:
-            if token.pos_ in ["ADJ", "ADV"]:
-                descw_ += 1
-        return descw_
+# Load Data
+df = pd.read_pickle('parsed_df_wlem.pkl')
 
-    # Count adj/adv per sentence
-    def coarse_sent(self, spacy):
-        nsent = []
-        for sent in spacy.sents:
-            nsent.append(coarse_desc(sent))
-        return 1. * sum(nsent)/len(nsent)
+X_df = df.drop('help_class', axis=1)
+y_df = df['help_class']
 
-    # Count # of comparatives/superlatives
-    def fine_desc(self, spacy):
-        descw_ = 0
-        for token in spacy:
-            if token.tag_ in ["JJR", "JJS", "RBR", "RBS"]:
-                descw_ += 1
-        return descw_
-
-    # Count comp/super per sentence
-    def fine_sent(self, spacy):
-        nsent = []
-        for sent in spacy.sents:
-            nsent.append(fine_desc(sent))
-        return 1. * sum(nsent)/len(nsent)
-
-    # Count # of named entities
-    def entity(self, spacy):
-        entw_ = 0
-        for token in spacy:
-            if token.ent_type_ != "":
-                entw_ += 1
-        return entw_
-
-    # Count named entities per sentence
-    def ent_sent(self, spacy):
-        nsent = []
-        for sent in spacy.sents:
-            nsent.append(entity(sent))
-        return 1. * sum(nsent)/len(nsent)
-
-    # Count # of Money or Quantity entities
-    def quant(self, spacy):
-        entw_ = 0
-        for token in spacy:
-            if token.ent_type_ in ["QUANTITY", "MONEY", "PERCENT"]:
-                entw_ += 1
-        return entw_
-
-    # Count money/quant entities per sentence
-    def quant_sent(self, spacy):
-        nsent = []
-        for sent in spacy.sents:
-            nsent.append(quant(sent))
-        return 1. * sum(nsent)/len(nsent)
-    
-    def fit(self, X, y=None):
-        return self
-    
-    def transform(self, X):
-        assert(type(X) == pd.core.frame.DataFrame), 'Input must be a DataFrame'
-        X['parsed_'] = X['text'].apply(self.parser)
-        
-        X['lemma'] = X['parsed_'].apply(self.lemma_text)
-        X['length'] = X['parsed_'].apply(self.count_wrd)
-        
-        X['desc_coarse'] = X['parsed_'].apply(self.coarse_desc)
-        X['desc_fine'] = X['parsed_'].apply(self.fine_desc)
-        X['dcoarse_pct'] = X['desc_coarse'] / X['length']
-        X['dcoarse_pct'] = X['dcoarse_pct'].fillna(0)
-        X['dfine_pct'] = X['desc_fine'] / X['length']
-        X['dfine_pct'] = X['dfine_pct'].fillna(0)
-        X['desc_ratio'] = X['desc_fine'] / X['desc_coarse']
-        X['desc_ratio'] = X['desc_ratio'].fillna(0)
-
-        X['entities'] = X['parsed_'].apply(self.entity)
-        X['quantities'] = X['parsed_'].apply(self.quant)
-        X['ent_pct'] = X['entities'] / X['length']
-        X['ent_pct'] = X['ent_pct'].fillna(0)
-        X['quant_pct'] = X['quantities'] / X['length']
-        X['quant_pct'] = X['quant_pct'].fillna(0)
-
-        X['sent_len'] = X['parsed_'].apply(self.count_sent)
-        X['sent_coarse'] = X['parsed_'].apply(self.coarse_sent)
-        X['sent_fine'] = X['parsed_'].apply(self.fine_sent)
-        X['sent_ent'] = X['parsed_'].apply(self.ent_sent)
-        X['sent_quant'] = X['parsed_'].apply(self.quant_sent)
-        
-        return X.drop('parsed_', axis=1)
-
+#Transformers
 class PredTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
     """
     Use predicted models as features
@@ -179,29 +67,28 @@ class ArrayTransformer(sk.base.BaseEstimator, sk.base.TransformerMixin):
 
     def transform(self, X):
         assert(type(X) == np.ndarray), 'Features must be a numpy array'
-        X_ar = X.reshape(5, len(X)/5).transpose()
+        X_ar = X.reshape(2, len(X)/2).transpose()
         return X_ar	
 
 # Feature Union
 all_features = FeatureUnion([
     ('forest', PredTransformer(ForestModel)),
-    ('tf_logit', PredTransformer(LogitTfidf)),
-    ('w2v_logit', PredTransformer(LogitW2V))
+    ('tf_logit', PredTransformer(LogitTfidf))
+    #,('w2v_logit', PredTransformer(LogitW2V))
     ])
 
-# Full Pipelinee
-search = {"forest__min_samples_split": [2, 10, 20],
-          "forest__max_depth": [None, 2, 5, 10],
-          "forest__min_samples_leaf": [1, 5, 10],
-          "forest__max_leaf_nodes": [None, 5, 10, 20]}
+# Full Pipeline CV
+search = {"min_samples_split": [2, 10, 20],
+          "max_depth": [None, 2, 5, 10],
+          "min_samples_leaf": [1, 5, 10],
+          "max_leaf_nodes": [None, 5, 10, 20]}
 full_pipe = sk.pipeline.Pipeline([
     ('predictions', all_features),
     ('to_array', ArrayTransformer()),
-    ('forest', RandomForestClassifier())
+    ('forest', GridSearchCV(RandomForestClassifier(), param_grid=search, cv=5, scoring='accuracy'))
     ])
 
-full_grid = GridSearchCV(full_pipe, param_grid=search, cv=3, scoring='accuracy')
-full_grid.fit(X_df, y_df)
+full_pipe.fit(X_df, y_df)
 
-print full_grid.best_params_
-print full_grid.best_score_
+print full_pipe.named_steps['forest'].best_params_
+print full_pipe.named_steps['forest'].best_score_
