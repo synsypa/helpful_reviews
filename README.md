@@ -29,11 +29,7 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 
 
 ### Full Model
-* `full_model.py` aggregates best performing models from each set of features using bagging with random forest.
-
-    Random Forest on NLP Features, Logit on TFIDF, Word2Vec excluded (Word2Vec model not wrapped in Transformer due to processing speed))
-
-    Accuracy = **73.3%**
+* `full_model.py` aggregates best performing models from each set of features (Random Forest on NLP, Logit on TFIDF Lemmas. Word2Vec excluded for computation time) using bagging with random forest.
 
 ### NLP Features Models
 * `nb_class.py` trains a Multinomial Naive Bayes classification using constructed features. 
@@ -50,7 +46,7 @@ Normalized with a Bayesian Prior of Median(X)/Median(Y)
 
 * `svm_class.py` trains a Support Vector Machine classification using constructed features (Kernal is determined via GridSearchCV). 
 
-    Model saved to `svm_class` dill (Accuracy = **%**)
+    Model untrained (training time very high)
 
 ### TFIDF Models
 * `mnb_tfidf.py` trains a Multinomial Naive Bayes classification using TFIDF features. (Includes code for using lemmatized text as features). 
